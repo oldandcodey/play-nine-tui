@@ -1,0 +1,10 @@
+Play Nine scorekeeper
+
+Easiest start from this folder:
+  ./play
+
+Or:
+  cargo run
+  cargo build --release && ./target/release/play-nine-tui
+
+See README.md for clone URL, SSH tips, and full docs.

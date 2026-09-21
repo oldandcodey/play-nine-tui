@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Play Nine Scorekeeper TUI</title>
+  <meta name="description" content="Rust + ratatui terminal scorekeeper for the card game Play Nine — hole scores, running totals, history, and ASCII celebration." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div>
+        <span class="tag">Rust · ratatui · TUI</span>
+        <h1>Play Nine Scorekeeper</h1>
+        <p class="lead">
+          A fairway-green terminal scorekeeper for the card game <em>Play Nine</em> —
+          not a card engine. Enter hole scores, track running totals (lowest wins),
+          resume unfinished rounds, and finish with ASCII champagne &amp; fireworks.
+        </p>
+        <div class="badges">
+          <span class="badge">MIT</span>
+          <span class="badge">MSRV 1.85</span>
+          <span class="badge">SSH-friendly</span>
+          <span class="badge">JSON history</span>
+        </div>
+      </div>
+    </header>
+
+    <section>
+      <h2>UI preview</h2>
+      <p class="c-muted" style="color:var(--muted)">Terminal-window mockups matching the live ratatui screens (menu · scoring · celebration).</p>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Main menu</h3>
+          <div class="term">
+            <div class="term-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="title">play-nine-tui</span></div>
+            <div class="term-body"><span class="c-fairway">╔════════════════════════════════════════╗</span>
+<span class="c-fairway">║</span>  <span class="c-sky"><b>PLAY NINE  ·  SCOREKEEPER</b></span>             <span class="c-fairway">║</span>
+<span class="c-fairway">║</span>  <span class="c-sand">lowest total wins</span> <span class="c-muted">· not a card eng.</span>  <span class="c-fairway">║</span>
+<span class="c-fairway">╚════════════════════════════════════════╝</span>
+<span class="c-foam">~~====================================~~</span>
+
+<span class="c-green"><b>* Main Menu </b></span>
+<span class="sel">&gt; New game</span>
+  Resume
+  History
+  Quit
+
+<span class="c-muted">History entries: 3</span>
+
+<span class="c-muted">↑/↓ select  ·  N/R/H/Q  ·  Enter  ·  q quit</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Scoring</h3>
+          <div class="term">
+            <div class="term-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="title">play-nine-tui · hole 4</span></div>
+            <div class="term-body"><span class="c-fairway">╔════════════════════════════════════════╗</span>
+<span class="c-fairway">║</span>  <span class="c-sky"><b>PLAY NINE  ·  SCOREKEEPER</b></span>             <span class="c-fairway">║</span>
+<span class="c-fairway">╚════════════════════════════════════════╝</span>
+<span class="c-deep" style="color:var(--deep)">  -- hole 4 approach --</span>
+<span class="c-sky">           .   ~    ~    .</span>
+<span class="c-sand">             /|\   flag</span>
+<span class="c-fairway">    o-----&gt; /_|_\_______/~\___</span>
+
+<span class="c-green"><b>* On the tee </b></span>
+Hole <span class="c-flag"><b>4</b></span> <span class="c-muted">/ 9</span>   ·   scoring: <span class="c-sky"><b>Alex</b></span>
+<span class="c-sand"><b>Score&gt;</b></span> <span class="c-white">_</span>
+
+<span class="c-green"><b>* Scorecard </b></span>
+<span class="c-sand"><b>Player    H1 H2 H3 H4  … Tot</b></span>
+<span class="sel">  Alex     2  1  0  ·       3</span>
+<span class="c-sand"><b>▲ Blair</b></span>   1  0  1  -       2
+  Casey    3  2  1  -       6
+
+<span class="c-sand">~  Keep it in the short grass.</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Celebration</h3>
+          <div class="term">
+            <div class="term-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="title">19th Hole</span></div>
+            <div class="term-body"><span class="c-sand">  * . o + ~ * . o + ~ * . o + ~ *</span>
+<span class="c-sky">  *  .  *  .  *    ·  *  ·    *</span>
+
+<span class="banner-win">***  BLAIR WINS THE ROUND  ***</span>
+
+<span class="c-sand"><b>  \o/   † †   \o/   cheers!   \o/</b></span>
+<span class="c-muted">  pop!  *clink*  19th hole open</span>
+
+<span class="c-flag">  .  *  ·  *  .    *  .  *    .</span>
+<span class="c-foam">  * . + o ~ = * . + o ~ = *</span>
+
+<span class="c-sand"><b>Final totals</b></span>
+<span class="c-white">Blair: 12   Alex: 15   Casey: 19</span>
+
+<span class="c-muted">any key / Enter → menu</span></div>
+          </div>
+        </div>
+      </div>
+      <p><a href="screenshots/menu.png">Screenshots</a> also live under <code>docs/screenshots/</code>.</p>
+    </section>
+
+    <section>
+      <h2>Features</h2>
+      <ul class="features">
+        <li>9- or 18-hole rounds · up to 8 players</li>
+        <li>Running totals with <b>▲</b> leader markers (lowest wins)</li>
+        <li>Jump/edit prior hole+player scores with <code>e</code></li>
+        <li>Resume unfinished rounds · JSON history summaries</li>
+        <li>Funny golf sayings + ASCII fairway vignettes while scoring</li>
+        <li>Champagne toast, fireworks, and confetti celebration (SSH-safe ASCII)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Build &amp; run</h2>
+<pre class="code">git clone https://github.com/bpelleti/play-nine-tui.git
+cd play-nine-tui
+cargo build --release
+./play
+# or: cargo run</pre>
+      <p>Working directory matters: scores are written to <code>data/play_nine.json</code> relative to CWD. Run from the project root.</p>
+    </section>
+
+    <footer class="footer">
+      <p>MIT © 2026 Bob Pelletier · <a href="https://github.com/bpelleti/play-nine-tui">github.com/bpelleti/play-nine-tui</a></p>
+      <p>This page is served from the repo <code>/docs</code> folder via GitHub Pages.</p>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,180 @@
+/* Play Nine TUI — GitHub Pages landing (self-contained, dark theme) */
+:root {
+  --bg: #0b120e;
+  --bg2: #121b15;
+  --panel: #162019;
+  --fairway: #228b22;
+  --green: #3ddc84;
+  --deep: #006400;
+  --sand: #daa520;
+  --sky: #4ecdc4;
+  --foam: #90ee90;
+  --muted: #6b7a70;
+  --text: #e8f0ea;
+  --flag: #ff5c5c;
+  --term-bg: #0a0f0c;
+  --border: #2a3d30;
+  --radius: 12px;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: var(--sans);
+  background: radial-gradient(ellipse at top, #152218 0%, var(--bg) 55%);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+a { color: var(--sky); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.wrap { max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+.hero {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.hero h1 {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  letter-spacing: -0.02em;
+}
+.hero .tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--deep);
+  background: var(--foam);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  margin-bottom: 0.75rem;
+}
+.hero p.lead { margin: 0; color: #c5d4c9; max-width: 42rem; font-size: 1.05rem; }
+.badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.badge {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--foam);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  overflow: hidden;
+}
+.card h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  color: var(--sand);
+  font-family: var(--mono);
+}
+
+/* Terminal chrome */
+.term {
+  background: var(--term-bg);
+  border: 1px solid var(--fairway);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(34,139,34,0.15);
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.35;
+}
+.term-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #1a2a1e;
+  border-bottom: 1px solid var(--border);
+}
+.term-bar .dot { width: 10px; height: 10px; border-radius: 50%; }
+.term-bar .dot.r { background: #ff5f56; }
+.term-bar .dot.y { background: #ffbd2e; }
+.term-bar .dot.g { background: #27c93f; }
+.term-bar .title { margin-left: 8px; color: var(--muted); font-size: 11px; }
+.term-body {
+  padding: 12px 14px 14px;
+  color: var(--text);
+  white-space: pre;
+  overflow-x: auto;
+  min-height: 220px;
+}
+
+.c-fairway { color: var(--fairway); }
+.c-green { color: var(--green); }
+.c-sand { color: var(--sand); }
+.c-sky { color: var(--sky); }
+.c-foam { color: var(--foam); }
+.c-muted { color: var(--muted); }
+.c-flag { color: var(--flag); }
+.c-white { color: #fff; }
+.sel { background: var(--green); color: #000; font-weight: 700; }
+.banner-win { background: var(--green); color: #000; font-weight: 700; }
+
+.box-title { color: var(--green); font-weight: 700; }
+.border-line { color: var(--fairway); }
+
+section { margin: 2.5rem 0; }
+section h2 {
+  font-size: 1.35rem;
+  margin: 0 0 0.75rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.4rem;
+}
+ul.features { padding-left: 1.2rem; }
+ul.features li { margin: 0.4rem 0; }
+
+pre.code {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--foam);
+}
+
+.footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Full-viewport mock pages for screenshots */
+body.mock-page {
+  background: #050805;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+body.mock-page .term {
+  width: min(860px, 100%);
+  font-size: 13px;
+}
+body.mock-page .term-body { min-height: 420px; padding: 16px 18px; }

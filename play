@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")"
+# Load Rust if installed via rustup
+if [ -f "$HOME/.cargo/env" ]; then
+  # shellcheck source=/dev/null
+  . "$HOME/.cargo/env"
+fi
+export TERM="${TERM:-xterm-256color}"
+export COLORTERM="${COLORTERM:-truecolor}"
+
+if ! command -v cargo >/dev/null 2>&1; then
+  echo "cargo not found. Expected at: $HOME/.cargo/bin/cargo"
+  echo "Install with: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+  exit 1
+fi
+
+BIN="./target/release/play-nine-tui"
+if [ ! -x "$BIN" ]; then
+  echo "Building Play Nine (first run may take a minute)..."
+  cargo build --release
+fi
+exec "$BIN"
