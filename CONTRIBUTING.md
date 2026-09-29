@@ -5,7 +5,7 @@ Thanks for taking an interest in **play-nine-tui**.
 ## Build
 
 ```bash
-git clone https://github.com/bpelleti/play-nine-tui.git
+git clone https://github.com/oldandcodey/play-nine-tui.git
 cd play-nine-tui
 cargo build --release
 ./play
