@@ -7,11 +7,9 @@ use ratatui::widgets::{Block, Borders, Clear, Paragraph, Row, Table};
 use ratatui::Frame;
 
 use crate::app::{App, JumpPhase, Screen};
-use crate::scenes;
 
 const GREEN: Color = Color::Green;
 const FAIRWAY: Color = Color::Rgb(34, 139, 34);
-const DEEP_GREEN: Color = Color::Rgb(0, 100, 0);
 const SAND: Color = Color::Rgb(218, 165, 32);
 const SKY: Color = Color::Cyan;
 const FLAG: Color = Color::Red;
@@ -89,9 +87,7 @@ fn fairway_accent() -> Line<'static> {
     ))
 }
 
-fn banner(frame: &mut Frame, area: Rect, app: &App) {
-    let on_scoring = app.screen == Screen::Scoring && app.game.is_some();
-
+fn banner(frame: &mut Frame, area: Rect) {
     let title = pad_inner("  PLAY NINE  ·  SCOREKEEPER");
     let title_line = banner_row(
         title,
@@ -113,7 +109,7 @@ fn banner(frame: &mut Frame, area: Rect, app: &App) {
         ],
     );
 
-    let mut lines = vec![
+    let lines = vec![
         Line::from(Span::styled(
             banner_border(true),
             Style::default().fg(FAIRWAY),
@@ -127,28 +123,6 @@ fn banner(frame: &mut Frame, area: Rect, app: &App) {
         fairway_accent(),
     ];
 
-    // Golf vignette strip while scoring (rotates on hole change).
-    if on_scoring {
-        let scene = scenes::scene_lines(app.scene_idx);
-        let hole = app
-            .game
-            .as_ref()
-            .map(|g| g.current_hole + 1)
-            .unwrap_or(1);
-        lines.push(Line::from(Span::styled(
-            format!("  -- hole {hole} approach --"),
-            Style::default().fg(DEEP_GREEN),
-        )));
-        for (i, row) in scene.iter().enumerate() {
-            let fg = match i {
-                0 => SKY,
-                1 => SAND,
-                _ => FAIRWAY,
-            };
-            lines.push(Line::from(Span::styled(row.clone(), Style::default().fg(fg))));
-        }
-    }
-
     let art = Paragraph::new(lines).alignment(Alignment::Center);
     frame.render_widget(art, area);
 }
@@ -156,8 +130,8 @@ fn banner(frame: &mut Frame, area: Rect, app: &App) {
 pub fn draw(frame: &mut Frame, app: &App) {
     let area = frame.area();
     let scoring = app.screen == Screen::Scoring && app.game.is_some();
-    // Extra room for vignette + fairway accent while scoring.
-    let banner_h = if scoring { 10 } else { 6 };
+    // Scoring: banner is exactly 5 rows, so the scorecard sits flush below it.
+    let banner_h = if scoring { 5 } else { 6 };
 
     let chunks = Layout::default()
         .direction(Direction::Vertical)
@@ -169,7 +143,7 @@ pub fn draw(frame: &mut Frame, app: &App) {
         ])
         .split(area);
 
-    banner(frame, chunks[0], app);
+    banner(frame, chunks[0]);
 
     match app.screen {
         Screen::MainMenu => draw_menu(frame, app, chunks[1]),
@@ -719,4 +693,55 @@ fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
             Constraint::Percentage((100 - percent_x) / 2),
         ])
         .split(popup_layout[1])[1]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::app::Game;
+    use ratatui::backend::TestBackend;
+    use ratatui::Terminal;
+
+    #[test]
+    fn scoring_screen_banner_sits_flush_above_scoring() {
+        let mut game = Game::new(9, vec!["Ada".into(), "Ben".into()]);
+        game.set_current_score(4);
+        game.advance();
+        let app = App {
+            screen: Screen::Scoring,
+            menu_idx: 0,
+            holes_choice: 9,
+            name_buf: String::new(),
+            score_buf: String::new(),
+            pending_names: Vec::new(),
+            game: Some(game),
+            history: Vec::new(),
+            status: String::new(),
+            error: String::new(),
+            celebration_tick: 0,
+            history_scroll: 0,
+            jump_phase: JumpPhase::Idle,
+            jump_buf: String::new(),
+            jump_hole: 1,
+            jumped: false,
+            saying_idx: 0,
+            last_saying_hole: None,
+        };
+        let mut term = Terminal::new(TestBackend::new(80, 30)).unwrap();
+        term.draw(|f| draw(f, &app)).unwrap();
+        let buf = term.backend().buffer();
+        let row = |y: u16| -> String { (0..80).map(|x| buf[(x, y)].symbol()).collect() };
+        let rows: Vec<String> = (0..30).map(row).collect();
+
+        // Banner = rows 0..=4 (box + fairway accent); scoring box starts at row 5.
+        assert!(rows[4].contains("~~===="), "fairway accent: {:?}", rows[4]);
+        assert!(rows[5].contains("On the tee"), "no gap above scoring: {:?}", rows[5]);
+        let all = rows.join("\n");
+        assert!(!all.contains("approach"), "vignette still rendered:\n{all}");
+        // Scoring still displays.
+        assert!(all.contains("Scorecard"));
+        assert!(all.contains("Ada") && all.contains("Ben"));
+        assert!(all.contains("Tot"));
+        assert!(all.contains("Score>"));
+    }
 }

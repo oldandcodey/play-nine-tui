@@ -183,8 +183,6 @@ pub struct App {
     pub jumped: bool,
     /// Index into [`crate::sayings::SAYINGS`]; refreshed on hole change.
     pub saying_idx: usize,
-    /// Index into golf ASCII vignettes; refreshed with sayings.
-    pub scene_idx: usize,
     /// Last `current_hole` we flavored (None = never).
     pub last_saying_hole: Option<usize>,
 }
@@ -210,7 +208,6 @@ impl App {
             jump_hole: 1,
             jumped: false,
             saying_idx: 0,
-            scene_idx: 0,
             last_saying_hole: None,
         };
         app.refresh_saying();
@@ -245,25 +242,16 @@ impl App {
 
     /// Pick a new funny golf saying (not every keypress — call on hole change).
     pub fn refresh_saying(&mut self) {
-        let seed = Self::entropy_seed()
-            ^ ((self.saying_idx as u64) << 9)
-            ^ (self.scene_idx as u64).wrapping_mul(0x9E37);
+        let seed = Self::entropy_seed() ^ ((self.saying_idx as u64) << 9);
         self.saying_idx = crate::sayings::next_saying_idx(self.saying_idx, seed);
     }
 
-    pub fn refresh_scene(&mut self) {
-        let n = crate::scenes::GOLF_SCENES.len().max(1);
-        let step = 1 + (Self::entropy_seed() as usize % n);
-        self.scene_idx = (self.scene_idx + step) % n;
-    }
-
-    /// Re-roll saying + vignette when `current_hole` changes (or first entry).
+    /// Re-roll saying when `current_hole` changes (or first entry).
     pub fn on_hole_context_changed(&mut self) {
         let hole = self.game.as_ref().map(|g| g.current_hole);
         if hole != self.last_saying_hole {
             self.last_saying_hole = hole;
             self.refresh_saying();
-            self.refresh_scene();
         }
     }
 
@@ -691,7 +679,6 @@ mod tests {
             jump_hole: 1,
             jumped: false,
             saying_idx: 0,
-            scene_idx: 0,
             last_saying_hole: None,
         };
         let items = app.menu_items();
@@ -721,22 +708,19 @@ mod tests {
             jump_hole: 1,
             jumped: false,
             saying_idx: 0,
-            scene_idx: 0,
             last_saying_hole: None,
         };
         app.on_hole_context_changed();
         let first = app.saying_idx;
-        let first_scene = app.scene_idx;
         // Same hole: no change
         app.on_hole_context_changed();
         assert_eq!(app.saying_idx, first);
-        assert_eq!(app.scene_idx, first_scene);
         // Advance hole
         if let Some(g) = app.game.as_mut() {
             g.current_hole = 1;
         }
         app.on_hole_context_changed();
-        // Index may coincidentally match (unlikely); scene or saying should move.
+        // Index may coincidentally match (unlikely); saying should move.
         // Force another hole to be confident we don't panic and path runs.
         if let Some(g) = app.game.as_mut() {
             g.current_hole = 2;

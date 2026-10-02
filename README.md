@@ -1,8 +1,9 @@
 # Play Nine Scorekeeper TUI
 
-Rust + [ratatui](https://ratatui.rs/) **terminal scorekeeper** for the card game *Play Nine* — not a card-play engine. Pick 9 or 18 holes, enter player names, type an integer score per hole, watch running totals (lowest wins), finish with an ASCII champagne/fireworks celebration, and keep summarized history in JSON.
+Rough-draft **scorekeeper** for the card game *Play Nine* — not a card-play engine.
+Pick 9 or 18 holes, enter player names, type an integer score per hole, watch running totals, finish with an ASCII champagne/fireworks celebration, and keep summarized history in JSON.
 
-**Stack:** Rust · ratatui · crossterm · serde_json · MIT
+**Stack:** Rust · [ratatui](https://ratatui.rs/) · crossterm · serde_json · MIT
 
 > GitHub Pages can serve the `/docs` folder for a dark-theme UI preview: [docs/index.html](docs/index.html).
 
@@ -14,10 +15,12 @@ Rust + [ratatui](https://ratatui.rs/) **terminal scorekeeper** for the card game
 
 ## Requirements
 
-- Rust toolchain (`rustc` / `cargo`) — edition 2021, MSRV 1.85
+- Rust toolchain (`rustc` / `cargo`) — edition 2021
 - A terminal that speaks ANSI color (most SSH clients do)
 
 ## Build & run
+
+From this directory:
 
 ```bash
 git clone https://github.com/oldandcodey/play-nine-tui.git
@@ -30,7 +33,7 @@ cargo build --release
 ./target/release/play-nine-tui
 ```
 
-Working directory matters: JSON is written to **`data/play_nine.json`** relative to the process CWD. Run from the project root (or create `./data` where you launch the binary). The `./play` script always `cd`s to the project root first.
+Working directory matters: JSON is written to **`data/play_nine.json`** relative to the process CWD. Run from the project root (or create `./data` where you launch the binary).
 
 ## SSH / Tailscale tips
 
@@ -40,7 +43,7 @@ export TERM=xterm-256color
 # Optional: force color if your multiplexor strips it
 export COLORTERM=truecolor
 
-ssh you@host 'cd /path/to/play-nine-tui && ./play'
+ssh you@host 'cd /path/to/play-nine-tui && ./target/release/play-nine-tui'
 ```
 
 - Needs a real TTY (interactive SSH session). Piping into the binary will fail.
@@ -71,7 +74,7 @@ Keys (also shown in the footer):
 ## UX extras (v1.1+)
 
 - **Funny golf sayings** (~25): one PG one-liner in the scoring status bar. Re-rolls when the hole number changes (not on every keypress).
-- **Fairway accent** under the banner; while scoring, a small **ASCII golf vignette** (flag / tee / cart / bunker) rotates with each new hole.
+- **Fairway accent** under the banner.
 - **Celebration**: multi-line toast + fireworks + confetti rain; terminal-friendly ASCII / common symbols only (SSH-safe fixed widths).
 
 ## Data & errors

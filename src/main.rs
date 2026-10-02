@@ -5,7 +5,6 @@
 mod app;
 mod persist;
 mod sayings;
-mod scenes;
 mod ui;
 
 use std::io::{self, stdout};
